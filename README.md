@@ -12,6 +12,7 @@
 | 📄 **מסמך אפיון מערכת (v1.1)** | [docs/system-specification-v1.1.pdf](docs/system-specification-v1.1.pdf) |
 | 🛠 **אפיון טכני** | [docs/technical-specification.pdf](docs/technical-specification.pdf) |
 | 🗄 **מסד נתונים (SQL Server)** | [database/](database/) · סקריפטים, ERD והוראות הרצה |
+| 📘 **מילון נתונים** | [docs/data-dictionary-phase-a.pdf](docs/data-dictionary-phase-a.pdf) |
 | 📊 **מצגת** | https://www.figma.com/slides/u1UOlC6fZuM9gAMZuRSEeu |
 
 ---

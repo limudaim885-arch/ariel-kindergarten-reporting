@@ -2,6 +2,8 @@
 
 # מסד הנתונים · שלב א'
 
+📘 **מילון הנתונים המלא:** [PDF](../docs/data-dictionary-phase-a.pdf) · [Word](data-dictionary-phase-a.docx). כל הטבלאות, העמודות, הכללים העסקיים, התשתית לפרוסי והשאלות הפתוחות.
+
 **Microsoft SQL Server 2016 ומעלה**, מקומי, על שרת וירטואלי ברשת של אריאל. Collation מומלץ: `Hebrew_100_CI_AS`.
 
 ## סדר הרצה

@@ -1,2 +1,7 @@
 .DS_Store
 Thumbs.db
+
+# Real client data: never commit
+database/04_import_data.sql
+*.xlsb
+*דחויים*

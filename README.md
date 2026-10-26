@@ -11,6 +11,7 @@
 | 🌐 **דמו חי** | https://arielprojectdemo.netlify.app |
 | 📄 **מסמך אפיון מערכת (v1.1)** | [docs/system-specification-v1.1.pdf](docs/system-specification-v1.1.pdf) |
 | 🛠 **אפיון טכני** | [docs/technical-specification.pdf](docs/technical-specification.pdf) |
+| 🗄 **מסד נתונים (SQL Server)** | [database/](database/) · סקריפטים, ERD והוראות הרצה |
 | 📊 **מצגת** | https://www.figma.com/slides/u1UOlC6fZuM9gAMZuRSEeu |
 
 ---
@@ -58,6 +59,7 @@
 index.html          הדמו (אפליקציית עמוד יחיד)
 netlify.toml        הגדרות פריסה
 docs/               מסמך אפיון מערכת ואפיון טכני
+database/           סקריפטי T-SQL, סקריפט ייבוא מהאקסל ותרשים ERD
 screenshots/        צילומי מסך של המערכת
 ```
 

@@ -13,7 +13,7 @@
 | 🛠 **אפיון טכני** | [docs/technical-specification.pdf](docs/technical-specification.pdf) |
 | 🗄 **מסד נתונים (SQL Server)** | [database/](database/) · סקריפטים, ERD והוראות הרצה |
 | 📘 **מילון נתונים** | [docs/data-dictionary-phase-a.pdf](docs/data-dictionary-phase-a.pdf) |
-| 📊 **מצגת** | https://www.figma.com/slides/u1UOlC6fZuM9gAMZuRSEeu |
+| 📊 **מצגת** | [docs/presentation.pdf](docs/presentation.pdf) · [Figma Slides](https://www.figma.com/slides/u1UOlC6fZuM9gAMZuRSEeu) |
 
 ---
 
@@ -59,7 +59,7 @@
 ```
 index.html          הדמו (אפליקציית עמוד יחיד)
 netlify.toml        הגדרות פריסה
-docs/               מסמך אפיון מערכת ואפיון טכני
+docs/               מצגת, מסמך אפיון מערכת, אפיון טכני ומילון נתונים
 database/           סקריפטי T-SQL, סקריפט ייבוא מהאקסל ותרשים ERD
 screenshots/        צילומי מסך של המערכת
 ```

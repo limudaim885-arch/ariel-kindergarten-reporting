@@ -10,6 +10,7 @@
 |---|---|
 | 🌐 **דמו חי** | https://arielprojectdemo.netlify.app |
 | 📑 **סיכום הפרויקט המלא** | [docs/דיווח_הגנים_סיכום_הפרויקט.pdf](docs/%D7%93%D7%99%D7%95%D7%95%D7%97_%D7%94%D7%92%D7%A0%D7%99%D7%9D_%D7%A1%D7%99%D7%9B%D7%95%D7%9D_%D7%94%D7%A4%D7%A8%D7%95%D7%99%D7%A7%D7%98.pdf) |
+| 🎬 **סרטון הדרכה (2 דקות)** | [docs/דיווח_הגנים_סרטון_הדרכה.mp4](docs/%D7%93%D7%99%D7%95%D7%95%D7%97_%D7%94%D7%92%D7%A0%D7%99%D7%9D_%D7%A1%D7%A8%D7%98%D7%95%D7%9F_%D7%94%D7%93%D7%A8%D7%9B%D7%94.mp4) |
 | 📄 **מסמך אפיון מערכת (v1.1)** | [docs/system-specification-v1.1.pdf](docs/system-specification-v1.1.pdf) |
 | 🛠 **אפיון טכני** | [docs/technical-specification.pdf](docs/technical-specification.pdf) |
 | 🗄 **מסד נתונים (SQL Server)** | [database/](database/) · סקריפטים, ERD והוראות הרצה |

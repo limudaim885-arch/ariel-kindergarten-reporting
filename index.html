@@ -602,6 +602,8 @@
   .pill{border-radius:7px;font-weight:600;font-size:.76rem;padding:.2rem .55rem;gap:.38rem;letter-spacing:0;}
   .pill::before{content:"";width:.42rem;height:.42rem;border-radius:50%;background:currentColor;flex:none;opacity:.9;}
   .pill.draft::before{opacity:.55;}
+.pill.dot-only{padding:0;background:none;gap:0;}
+.pill.dot-only::before{width:.55rem;height:.55rem;opacity:1;}
 
   /* הודעות */
   .callout{border:0;border-radius:var(--radius);padding:.8rem 1rem;font-size:.9rem;line-height:1.5;}
@@ -2298,8 +2300,8 @@ function openRequestsPanel(all){
   var stagesHtml = STAGE_DEFS.map(function(st){
     var n = counts[st.status]||0;
     return '<div class="card'+(st.view && n>0 ? ' accent':'')+'">'+
-      '<h3 style="display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap;">'+
-        '<span>'+esc(st.label)+'</span>'+statusPill(st.status)+'</h3>'+
+      '<h3 style="display:flex;align-items:center;gap:.5rem;">'+
+        statusPill(st.status).replace('class="pill ','aria-hidden="true" class="pill dot-only ').replace(/>[^<]*<\/span>$/,'></span>')+'<span>'+esc(st.label)+'</span></h3>'+
       '<div class="stat">'+fmt(n)+'</div>'+
       '<div class="stat-sub"><strong>'+esc(st.holder)+'</strong> · '+esc(st.desc)+'</div>'+
       (st.view && n>0 ? '<div style="margin-top:.6rem"><button type="button" class="btn secondary sm" data-action="go" data-view="'+st.view+'" aria-label="מעבר לרשימה — '+esc(st.label)+'">מעבר לרשימה</button></div>' : '')+

@@ -3030,11 +3030,15 @@ function render(){
   var dlgOpen = document.getElementById('modal').open;
   if(rendered && !dlgOpen && (!document.activeElement || document.activeElement===document.body)){
     var back = null; try{ back = focusKey && main.querySelector(focusKey); }catch(err){}
+    if(back && IS_IOS && back.tagName==='SELECT') back = null;
     (back || main).focus({preventScroll:true});
   }
   rendered = true;
 }
 var rendered = false;
+/* באייפון (Safari וגם Chrome) החזרת פוקוס לרשימה נפתחת פותחת שוב את גלגל הבחירה, ולכן שם לא מחזירים פוקוס לרשימות */
+var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+function focusSel(el){ if(el && !(IS_IOS && el.tagName==='SELECT')) el.focus(); }
 
 function goto(view){ if(view!==state.view) state.tableQ = {}; state.moreOpen = false; state.view = view; render(); focusMainTop(); }
 
@@ -4110,11 +4114,11 @@ document.addEventListener('click', function(e){
 });
 
 document.addEventListener('change', function(e){
-  if(e.target.dataset && e.target.dataset.repMonth){ state.repMonthSel = e.target.value; state.tableQ = {}; render(); var rm = document.getElementById('repMonth'); if(rm) rm.focus(); return; }
-  if(e.target.dataset && e.target.dataset.hist){ state.hist[e.target.dataset.hist] = e.target.value; if(e.target.dataset.hist==='s') state.hist.g=''; state.tableQ = {}; render(); var hf = document.getElementById(e.target.id); if(hf) hf.focus(); return; }
+  if(e.target.dataset && e.target.dataset.repMonth){ state.repMonthSel = e.target.value; state.tableQ = {}; render(); focusSel(document.getElementById('repMonth')); return; }
+  if(e.target.dataset && e.target.dataset.hist){ state.hist[e.target.dataset.hist] = e.target.value; if(e.target.dataset.hist==='s') state.hist.g=''; state.tableQ = {}; render(); focusSel(document.getElementById(e.target.id)); return; }
   if(e.target.dataset && e.target.dataset.monthFilter){
     state.monthSel[e.target.dataset.monthFilter] = e.target.value; state.tableQ = {};
-    render(); var mf = document.getElementById(e.target.id); if(mf) mf.focus(); return;
+    render(); focusSel(document.getElementById(e.target.id)); return;
   }
   if(e.target.dataset && e.target.dataset.tableFilter){ var tf = tq(e.target.dataset.tableFilter); tf.f = e.target.value; tf.p = 0; applyTable(e.target.dataset.tableFilter); return; }
   if(e.target.name==='theme'){ setPref('ganim-theme', e.target.value); applyTheme(e.target.value); toast('ערכת הצבעים עודכנה'); return; }
@@ -4126,7 +4130,7 @@ document.addEventListener('change', function(e){
       state.activeSupplierId = newS;
       state.draft = emptyDraft();
       render();
-      var sps = document.querySelector('[data-action="select-supplier-persona"]'); if(sps) sps.focus();
+      focusSel(document.querySelector('[data-action="select-supplier-persona"]'));
     };
     if(draftHasData()){
       e.target.value = state.activeSupplierId;
@@ -4142,13 +4146,13 @@ document.addEventListener('change', function(e){
     state.activeReportId = null;
     if(state.view==='teacher-approve') state.view='teacher-inbox';
     render();
-    var tps = document.querySelector('[data-action="select-teacher-persona"]'); if(tps) tps.focus();
+    focusSel(document.querySelector('[data-action="select-teacher-persona"]'));
     return;
   }
   if(e.target.dataset && e.target.dataset.action==='select-staff-persona'){
     state.staffName = e.target.value;
     render();
-    var stp = document.querySelector('[data-action="select-staff-persona"]'); if(stp) stp.focus();
+    focusSel(document.querySelector('[data-action="select-staff-persona"]'));
     return;
   }
   if(e.target.id==='gardenSelect'){
@@ -4159,7 +4163,7 @@ document.addEventListener('change', function(e){
       var ne = newG ? ensureEng(state.activeSupplierId, newG) : null;
       state.draft.engId = ne ? ne.id : ''; state.draft.rate = ne ? ne.rate : CONTRACT_RATE;
       render();
-      var gs = document.getElementById('gardenSelect'); if(gs) gs.focus();
+      focusSel(document.getElementById('gardenSelect'));
     };
     if(state.draft.dates.length){
       e.target.value = state.draft.gardenId;   /* מחזירים את הבחירה עד לאישור */
@@ -4187,7 +4191,7 @@ document.addEventListener('change', function(e){
   if(e.target.id==='engSelect'){
     var se = engById(e.target.value); if(!se) return;
     state.draft.engId = se.id; state.draft.rate = se.rate; state.draft.doubles = (state.draft.doubles||[]);
-    render(); var es = document.getElementById('engSelect'); if(es) es.focus();
+    render(); focusSel(document.getElementById('engSelect'));
     toast('נבחרה ההתקשרות: '+engLabel(se));
     return;
   }

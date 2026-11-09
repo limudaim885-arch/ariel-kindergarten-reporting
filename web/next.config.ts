@@ -18,9 +18,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // cacheComponents is off: it prerenders a static shell that cannot carry the per-request CSP nonce.
   turbopack: {
     rules: {
       "*.css": {

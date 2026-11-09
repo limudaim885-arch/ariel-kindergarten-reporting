@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Heebo } from "next/font/google";
+import { connection } from "next/server";
 import "./globals.css";
 
 const heebo = Heebo({
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
   description: "מערכת דיווח ואישור דיגיטליים של פעילות ספקים בגני ילדים",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // The CSP nonce is per request, so pages must not be prerendered.
+  await connection();
   return (
     <html lang="he" dir="rtl" className={`${heebo.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>

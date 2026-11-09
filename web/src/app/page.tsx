@@ -1,7 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Home() {
-  return (
-    <main className="flex flex-1 items-center justify-center p-6">
-      <h1 className="text-2xl font-semibold">דיווח הגנים</h1>
-    </main>
-  );
+  redirect("/login");
 }

@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-/** Refreshes the Supabase session cookies on each request. */
+/** Refreshes the Supabase session cookies on each request and reports whether a user is signed in. */
 export async function updateSession(
   request: NextRequest,
   requestHeaders: Headers,
@@ -30,7 +30,7 @@ export async function updateSession(
   );
 
   // Validates the token with Supabase Auth, which also refreshes it.
-  await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
 
-  return response;
+  return { response, signedIn: data.user !== null };
 }

@@ -296,8 +296,10 @@ CREATE TABLE auth.OtpRequests (               -- קוד אימות: נשמר מ�
     LoginKey         VARCHAR(10)   NOT NULL, -- סמל הגן או מספר הספק שהוזן
     MobilePhone      CHAR(10)      NOT NULL, -- הנייד שנבחר מהרשימה המוסתרת
     Channel          VARCHAR(10)   NOT NULL, -- SMS | VOICE
-    CodeHash         VARBINARY(32) NOT NULL, -- SHA-256 של הקוד + Salt
-    CodeSalt         VARBINARY(16) NOT NULL,
+    CodeHash         VARBINARY(32) NOT NULL, -- HMAC-SHA256(מפתח סודי, Salt + הקוד). המפתח נשמר מחוץ למסד (Key Vault / משתנה סביבה בשרת האפליקציה) ולעולם לא בטבלה.
+                                             -- סיבה: לקוד בן 6 ספרות יש רק מיליון צירופים, ולכן SHA-256 רגיל ניתן לפיצוח מיידי אם המסד דולף. בלי המפתח, ה-Hash חסר ערך.
+    CodeSalt         VARBINARY(16) NOT NULL, -- אקראי לכל בקשה (CSPRNG)
+    HmacKeyVersion   TINYINT       NOT NULL CONSTRAINT DF_OtpRequests_KeyVer DEFAULT (1), -- מאפשר החלפת מפתח (rotation) בלי לשבור קודים פעילים
     CreatedAt        DATETIME2(0)  NOT NULL CONSTRAINT DF_OtpRequests_CreatedAt DEFAULT (SYSUTCDATETIME()),
     ExpiresAt        DATETIME2(0)  NOT NULL, -- CreatedAt + OtpTtlMinutes (5)
     AttemptCount     TINYINT       NOT NULL CONSTRAINT DF_OtpRequests_Attempts DEFAULT (0),
@@ -310,11 +312,20 @@ CREATE TABLE auth.OtpRequests (               -- קוד אימות: נשמר מ�
 CREATE INDEX IX_OtpRequests_Phone ON auth.OtpRequests (MobilePhone, CreatedAt DESC);
 GO
 
-CREATE TABLE auth.PhoneLockouts (             -- נעילה לפי נייד (לא לפי גן / ספק)
+/* נעילה לפי נייד (לא לפי גן / ספק).
+   הגנה מפני ניחוש מול הגנה מפני נעילה זדונית של משתמש לגיטימי:
+   1. כל קוד נפסל אחרי OtpMaxAttempts ניסיונות שגויים (auth.OtpRequests.AttemptCount), ונדרש קוד חדש.
+   2. הנייד ננעל רק אחרי OtpPhoneLockThreshold כישלונות בתוך OtpPhoneLockWindowMinutes.
+   3. רפרנטית יכולה לשחרר נעילה, והשחרור נרשם ביומן הפעולות. */
+CREATE TABLE auth.PhoneLockouts (
     MobilePhone      CHAR(10)      NOT NULL CONSTRAINT PK_PhoneLockouts PRIMARY KEY,
-    FailedAttempts   TINYINT       NOT NULL CONSTRAINT DF_PhoneLockouts_Failed DEFAULT (0),
+    FailedAttempts   TINYINT       NOT NULL CONSTRAINT DF_PhoneLockouts_Failed DEFAULT (0), -- כישלונות בחלון הנוכחי
+    WindowStartedAt  DATETIME2(0)  NULL,     -- תחילת חלון הספירה
     LastFailedAt     DATETIME2(0)  NULL,
-    LockedUntil      DATETIME2(0)  NULL      -- NULL או עבר = לא נעול
+    LockedUntil      DATETIME2(0)  NULL,     -- NULL או עבר = לא נעול
+    LockCount        SMALLINT      NOT NULL CONSTRAINT DF_PhoneLockouts_LockCount DEFAULT (0), -- כמה פעמים ננעל: לזיהוי ניסיון תקיפה ולהתראה לרפרנטית
+    UnlockedByStaffUserId INT      NULL CONSTRAINT FK_PhoneLockouts_UnlockedBy REFERENCES core.StaffUsers (StaffUserId),
+    UnlockedAt       DATETIME2(0)  NULL
 );
 GO
 

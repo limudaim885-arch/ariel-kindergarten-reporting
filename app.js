@@ -30,6 +30,10 @@ var NF=new Intl.NumberFormat('he-IL'),
     HMF=new Intl.DateTimeFormat('he-IL',{hour:'2-digit',minute:'2-digit'});
 function fmt(n){ return NF.format(n); }
 function money(n){ return '<span class="num">₪'+fmt(n)+'</span>'; }
+/* גרסת טקסט רגיל של money(): לשימוש בהודעות, בלי לחתוך תגיות HTML בביטוי רגולרי */
+function moneyText(n){ return '₪'+fmt(n); }
+/* מזהי בחירה (חודש, ספק, גן) מכילים רק אותיות, ספרות, קו תחתון ומקף. כל תו אחר נזרק כבר בקליטה. */
+function safeToken(v){ return String(v==null?'':v).replace(/[^\w-]/g,''); }
 function dateHe(iso){
   var d = new Date(iso+'T00:00:00');
   return '<span class="num">'+DF.format(d)+'</span>';
@@ -1165,7 +1169,7 @@ function capBlockAdd(addS, addM){
   var eid = state.draft.engId; if(!state.draft.gardenId || !eid) return '';
   var blk = engBlockReason(engById(eid)); if(blk) return 'אי אפשר לדווח: '+blk+'.';
   var pd = draftPendingFor(eid), cs = capState(eid, pd.s+addS, pd.m+addM);
-  return cs && cs.over ? 'אי אפשר להוסיף: הדיווח יעבור את תקרת ההתקשרות ('+cs.capS+' מפגשים, '+money(cs.capM).replace(/<[^>]+>/g,'')+'). לאישור חריגה יש להתקשר לרפרנטית.' : '';
+  return cs && cs.over ? 'אי אפשר להוסיף: הדיווח יעבור את תקרת ההתקשרות ('+cs.capS+' מפגשים, '+moneyText(cs.capM)+'). לאישור חריגה יש להתקשר לרפרנטית.' : '';
 }
 function restWarn(d){ if(isRestDay(d)) toast('ביקור ב'+restLabel(d)+' יסומן לבדיקה של הרפרנטית','warn'); }
 function draftSess(){ var d = state.draft; return d.dates.length + (d.doubles||[]).filter(function(x){ return d.dates.indexOf(x)>-1; }).length; }
@@ -3290,10 +3294,10 @@ document.addEventListener('click', function(e){
 });
 
 document.addEventListener('change', function(e){
-  if(e.target.dataset && e.target.dataset.repMonth){ state.repMonthSel = e.target.value; state.tableQ = {}; render(); focusSel(document.getElementById('repMonth')); return; }
-  if(e.target.dataset && e.target.dataset.hist){ state.hist[e.target.dataset.hist] = e.target.value; if(e.target.dataset.hist==='s') state.hist.g=''; state.tableQ = {}; render(); focusSel(document.getElementById(e.target.id)); return; }
+  if(e.target.dataset && e.target.dataset.repMonth){ state.repMonthSel = safeToken(e.target.value); state.tableQ = {}; render(); focusSel(document.getElementById('repMonth')); return; }
+  if(e.target.dataset && e.target.dataset.hist){ state.hist[e.target.dataset.hist] = safeToken(e.target.value); if(e.target.dataset.hist==='s') state.hist.g=''; state.tableQ = {}; render(); focusSel(document.getElementById(e.target.id)); return; }
   if(e.target.dataset && e.target.dataset.monthFilter){
-    state.monthSel[e.target.dataset.monthFilter] = e.target.value; state.tableQ = {};
+    state.monthSel[e.target.dataset.monthFilter] = safeToken(e.target.value); state.tableQ = {};
     render(); focusSel(document.getElementById(e.target.id)); return;
   }
   if(e.target.dataset && e.target.dataset.tableFilter){ var tf = tq(e.target.dataset.tableFilter); tf.f = e.target.value; tf.p = 0; applyTable(e.target.dataset.tableFilter); return; }

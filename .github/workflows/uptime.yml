@@ -1,0 +1,39 @@
+name: Uptime check
+
+# Every 15 minutes, check that the live sites answer. If a check fails the run
+# fails, and GitHub emails the repository owner (Settings > Notifications >
+# Actions: "Send notifications for failed workflows only").
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Web app login page answers 200
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            code=$(curl -s -o /tmp/login.html -w "%{http_code}" --max-time 20 https://ariel-reporting.vercel.app/login || true)
+            if [ "$code" = "200" ] && grep -q "<html" /tmp/login.html; then
+              echo "web app OK (attempt $attempt)"; exit 0
+            fi
+            echo "attempt $attempt: HTTP $code"; sleep 15
+          done
+          echo "::error::https://ariel-reporting.vercel.app/login is not answering 200"
+          exit 1
+      - name: Static demo answers 200
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 https://arielproject.vercel.app/ || true)
+            if [ "$code" = "200" ]; then echo "static demo OK (attempt $attempt)"; exit 0; fi
+            echo "attempt $attempt: HTTP $code"; sleep 15
+          done
+          echo "::error::https://arielproject.vercel.app/ is not answering 200"
+          exit 1

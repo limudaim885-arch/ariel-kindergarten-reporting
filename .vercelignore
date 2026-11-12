@@ -1,6 +1,4 @@
-web
 docs
 database
 screenshots
-# Vercel: deploy only index.html and app.js
 netlify.toml

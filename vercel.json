@@ -38,14 +38,16 @@
       ]
     }
   ],
-  "rewrites": [
+  "redirects": [
     {
       "source": "/web",
-      "destination": "/not-found-blocked"
+      "destination": "/",
+      "permanent": false
     },
     {
       "source": "/web/:path*",
-      "destination": "/not-found-blocked"
+      "destination": "/",
+      "permanent": false
     }
   ]
 }

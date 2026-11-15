@@ -11,6 +11,7 @@ const heebo = Heebo({
 export const metadata: Metadata = {
   title: "דיווח הגנים - חברה עירונית אריאל",
   description: "מערכת דיווח ואישור דיגיטליים של פעילות ספקים בגני ילדים",
+  robots: { index: false, follow: false },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

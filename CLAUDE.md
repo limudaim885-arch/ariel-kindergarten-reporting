@@ -11,14 +11,14 @@
 ## החלטות טכנולוגיות (סופיות)
 - **אפליקציה:** Next.js (App Router, TypeScript) על Vercel. הקוד בתיקייה `web/`, ובפרויקט ב-Vercel מגדירים Root Directory = `web`.
 - **מסד נתונים וכניסה:** Supabase (PostgreSQL 17 + Supabase Auth).
-- **SMS:** mgroup דרך Send SMS Hook של Supabase, בשם השולח `Ariel`. ה-API של mgroup עוד לא התקבל.
+- **SMS:** ספק 019 דרך Send SMS Hook של Supabase. החיבור ייעשה אחרי חתימת הלקוח, ועד אז עובדים עם מספרי בדיקה.
 - **בלי Make.**
-- **הדמו** (`index.html` בשורש הריפו, מתפרסם ב-Netlify) משמש כמקור לעיצוב ולזרימות. לא שוברים אותו.
+- **הדמו** (`index.html` בשורש הריפו, מתפרסם ב-Vercel בכתובת arielproject.vercel.app) משמש כמקור לעיצוב ולזרימות. לא שוברים אותו.
 
 ## מסד הנתונים
 - הסקריפטים נמצאים ב-`database/postgres/`, ושם גם `סדר הרצה.txt`. הם כבר הורצו על פרויקט הבדיקות ב-Supabase.
 - הסכמות: `ref`, `core`, `ops`, `access`, `audit`, `procy`, `stg`, `history`. שמות הטבלאות והעמודות ב-snake_case.
-- **כל שינוי במבנה המסד נכתב כקובץ מיגרציה ממוספר חדש** (09, 10 וכו') ב-`database/postgres/`. לא משנים את המבנה ידנית בלוח הבקרה.
+- **כל שינוי במבנה המסד נכתב כקובץ מיגרציה ממוספר חדש** (11 וכו') ב-`database/postgres/`. לא משנים את המבנה ידנית בלוח הבקרה.
 - אין מחיקה פיזית של ישויות עסקיות. משתמשים ב-`is_active = false`.
 - שורת דיווח שומרת צילום של התעריף מרגע הדיווח (`tariff_applied`).
 - תקרות: התצוגה `core.vw_engagement_usage` (`is_warning`, `is_blocked`).
@@ -70,6 +70,5 @@
 - הודעות commit ברורות, בעברית או באנגלית.
 
 ## נקודות פתוחות
-- ה-API של mgroup: כשיגיע, כותבים Edge Function ששולחת SMS ומחליפים את ה-hook הזמני (`access.send_sms_hook`).
+- ה-API של 019: אחרי החתימה, כותבים Edge Function ששולחת SMS ומחליפים את ה-hook הזמני (`access.send_sms_hook`).
 - SMTP לצוות: צריך להגדיר שרת מייל משלנו, ואז לערוך את התבנית "Magic link or OTP" כך שתכלול `{{ .Token }}`.
-- ה-README בריפו עדיין מתאר SQL Server מקומי. צריך לעדכן אותו.

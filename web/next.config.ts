@@ -12,6 +12,9 @@ const securityHeaders = [
   },
   { key: "Strict-Transport-Security", value: "max-age=31536000" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  // The system is internal: keep every page out of search engine results.
+  // No robots.txt Disallow on purpose, so crawlers can still read this noindex.
+  { key: "X-Robots-Tag", value: "noindex, nofollow" },
 ];
 
 const nextConfig: NextConfig = {

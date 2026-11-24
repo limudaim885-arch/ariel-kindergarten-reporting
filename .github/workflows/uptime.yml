@@ -15,6 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Web app and database answer (health check)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            code=$(curl -s -o /tmp/health.json -w "%{http_code}" --max-time 20 https://ariel-reporting.vercel.app/api/health || true)
+            if [ "$code" = "200" ] && grep -q '"status":"ok"' /tmp/health.json; then
+              echo "health OK (attempt $attempt)"; exit 0
+            fi
+            echo "attempt $attempt: HTTP $code"; sleep 15
+          done
+          echo "::error::https://ariel-reporting.vercel.app/api/health is not answering ok (the app or the database is down)"
+          exit 1
       - name: Web app login page answers 200
         run: |
           set -euo pipefail

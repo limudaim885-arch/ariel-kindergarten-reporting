@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-// Mirrors the headers in netlify.toml (which only protect the static demo).
+// Mirrors the security headers of the static demo (vercel.json in the repo root).
 // CSP is not set here yet; see the proposal in the PR discussion.
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },

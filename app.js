@@ -3455,7 +3455,7 @@ document.addEventListener('click', function(e){
   }
   if(state.moreOpen && !(e.target.closest && e.target.closest('#bottomNav'))){ state.moreOpen = false; renderNav(); }
 }, true);
-/* בתוך תצוגת Claude הורדת קבצים עוברת דרך יכולת downloads; באתר רגיל (Netlify) הקישור עובד כרגיל */
+/* בתוך תצוגת Claude הורדת קבצים עוברת דרך יכולת downloads; באתר רגיל (Vercel) הקישור עובד כרגיל */
 var dlCap = null;
 if(window.claude && typeof window.claude.use==='function'){ window.claude.use('downloads').then(function(d){ dlCap = d; }).catch(function(){}); }
 document.addEventListener('click', function(e){

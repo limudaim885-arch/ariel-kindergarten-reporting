@@ -94,7 +94,7 @@ npm run dev
 נדרש קובץ `web/.env.local` עם שלושת משתני Supabase: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` ו-`SUPABASE_SERVICE_ROLE_KEY`. הקובץ לא נשמר בריפו.
 
 ## פריסה
-שני פרויקטים ב-Vercel מאותו ריפו: הדמו מהשורש (`vercel.json`), והאפליקציה החדשה עם Root Directory בשם `web`. הכתובת `/web` בדמו מופנית לדף הבית. הקובץ `netlify.toml` שייך לאתר הדמו הישן ב-Netlify, שנשאר בינתיים.
+שני פרויקטים ב-Vercel מאותו ריפו: הדמו מהשורש (`vercel.json`), והאפליקציה החדשה עם Root Directory בשם `web`. הכתובת `/web` בדמו מופנית לדף הבית.
 
 ## מבנה הריפו
 ```
@@ -107,7 +107,6 @@ docs/               מצגת, מסמכי אפיון, מילון נתונים, ס
 screenshots/        צילומי מסך של הדמו
 .github/            עדכוני ספריות ובדיקת זמינות
 vercel.json         הגדרות הפריסה של הדמו
-netlify.toml        הגדרות האתר הישן ב-Netlify
 CLAUDE.md           הנחיות הפיתוח של הפרויקט
 ```
 

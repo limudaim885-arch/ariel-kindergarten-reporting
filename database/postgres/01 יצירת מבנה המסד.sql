@@ -269,7 +269,7 @@ CREATE TABLE ops.notifications (               -- יומן כל SMS / שיחה /
     scheduled_for       timestamptz(0) NOT NULL DEFAULT now(),
     sent_at             timestamptz(0) NULL,
     status              varchar(12)  NOT NULL DEFAULT 'QUEUED',
-    provider_message_id varchar(100) NULL,     -- מזהה ההודעה אצל ספק ה-SMS (mgroup)
+    provider_message_id varchar(100) NULL,     -- מזהה ההודעה אצל ספק ה-SMS (019)
     error_text          varchar(500) NULL,
     created_at          timestamptz(0) NOT NULL DEFAULT now(),
     CONSTRAINT ck_notifications_channel   CHECK (channel IN ('SMS','VOICE','EMAIL')),

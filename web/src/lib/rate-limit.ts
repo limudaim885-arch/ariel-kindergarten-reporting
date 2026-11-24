@@ -15,6 +15,8 @@ export const RULES = {
   verifyCode: { max: 15, windowMs: 10 * 60_000 },
   staffSend: { max: 5, windowMs: 10 * 60_000 },
   staffVerify: { max: 15, windowMs: 10 * 60_000 },
+  // /api/health: the uptime check calls it a few times every 15 minutes.
+  health: { max: 30, windowMs: 60_000 },
 } satisfies Record<string, RateRule>;
 
 export async function clientIp(): Promise<string> {

@@ -277,7 +277,7 @@ CREATE TABLE ops.Notifications (              -- יומן כל SMS / שיחה / 
     ScheduledFor     DATETIME2(0)  NOT NULL CONSTRAINT DF_Notifications_Scheduled DEFAULT (SYSUTCDATETIME()),
     SentAt           DATETIME2(0)  NULL,
     Status           VARCHAR(12)   NOT NULL CONSTRAINT DF_Notifications_Status DEFAULT ('QUEUED'),
-    ProviderMessageId NVARCHAR(100) NULL,    -- מזהה ההודעה אצל ספק ה-SMS (mgroup)
+    ProviderMessageId NVARCHAR(100) NULL,    -- מזהה ההודעה אצל ספק ה-SMS (019)
     ErrorText        NVARCHAR(500) NULL,
     CreatedAt        DATETIME2(0)  NOT NULL CONSTRAINT DF_Notifications_CreatedAt DEFAULT (SYSUTCDATETIME()),
     CONSTRAINT CK_Notifications_Channel CHECK (Channel IN ('SMS','VOICE','EMAIL')),

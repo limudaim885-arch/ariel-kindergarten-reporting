@@ -74,7 +74,7 @@ INSERT INTO ref.Settings (SettingKey, SettingValue, ValueType, DescriptionHe) VA
  ('CapWarnRemainingSessions',  N'3',  'INT',  N'התראה לספק כשנותרו X מפגשים, או סכום של X מפגשים רגילים'),
  ('TeacherReminderDays',       NULL,  'INT',  N'אחרי כמה ימים בלי אישור נשלחת תזכורת לגננת'),
  ('StaffEscalationDays',       NULL,  'INT',  N'אחרי כמה ימים בלי אישור הרפרנטית מקבלת התראה'),
- ('SmsProvider',               N'mgroup', 'TEXT', N'ספק שליחת SMS ושיחות קוליות'),
+ ('SmsProvider',               N'019', 'TEXT', N'ספק שליחת SMS ושיחות קוליות'),
  ('SystemTimeZone',            N'Israel Standard Time', 'TEXT', N'כל הזמנים נשמרים ב-UTC ומוצגים לפי אזור זה');
 
 COMMIT TRANSACTION;

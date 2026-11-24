@@ -69,7 +69,7 @@ INSERT INTO ref.settings (setting_key, setting_value, value_type, description_he
  ('CapWarnRemainingSessions',  '3',  'INT',  'התראה לספק כשנותרו X מפגשים, או סכום של X מפגשים רגילים'),
  ('TeacherReminderDays',       NULL, 'INT',  'אחרי כמה ימים בלי אישור נשלחת תזכורת לגננת'),
  ('StaffEscalationDays',       NULL, 'INT',  'אחרי כמה ימים בלי אישור הרפרנטית מקבלת התראה'),
- ('SmsProvider',               'mgroup', 'TEXT', 'ספק שליחת SMS ושיחות קוליות'),
+ ('SmsProvider',               '019', 'TEXT', 'ספק שליחת SMS ושיחות קוליות'),
  ('SystemTimeZone',            'Asia/Jerusalem', 'TEXT', 'כל הזמנים נשמרים ב-UTC ומוצגים לפי אזור זה');
  -- במקור: 'Israel Standard Time' (שם אזור של Windows). ב-PostgreSQL ובשרתי Vercel השם הוא Asia/Jerusalem
 

@@ -1,13 +1,16 @@
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { getAppUser, HOME_BY_TYPE } from "@/lib/auth/session";
+import { isStaffLoginError } from "@/lib/auth/staff-sso";
 import { PhoneLoginCard } from "./phone-login-card";
 import { StaffLoginCard } from "./staff-login-card";
 
 export const metadata = { title: "כניסה - דיווח הגנים" };
 
-export default async function LoginPage() {
+export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   await connection();
+  const staffParam = (await searchParams).staff;
+  const staffError = isStaffLoginError(staffParam) ? staffParam : null;
 
   let home: string | null = null;
   try {
@@ -39,7 +42,8 @@ export default async function LoginPage() {
 
       <p className="mx-auto mb-6 max-w-2xl rounded-xl bg-info-soft px-4 py-3 text-info">
         <strong>איך להתחבר:</strong> כל משתמש נכנס דרך הכרטיס המתאים לו. ספקים נכנסים עם מספר ספק, וגננות
-        עם סמל הגן. כל אחד בוחר את הנייד שלו מתוך הרשימה, ומקבל קוד חד-פעמי ב-SMS.
+        עם סמל הגן. כל אחד בוחר את הנייד שלו מתוך הרשימה, ומקבל קוד חד-פעמי ב-SMS. צוות החברה העירונית
+        נכנס עם חשבון העבודה של אריאל.
       </p>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -50,7 +54,7 @@ export default async function LoginPage() {
           keyLabel="מספר ספק"
           idPrefix="supplier"
         />
-        <StaffLoginCard />
+        <StaffLoginCard error={staffError} />
         <PhoneLoginCard
           userType="TEACHER"
           title="כניסת גננות"

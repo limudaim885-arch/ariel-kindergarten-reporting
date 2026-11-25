@@ -3,7 +3,6 @@
 import { redirect } from "next/navigation";
 import { createSessionClient } from "@/lib/supabase/server";
 import {
-  appUser,
   appUsers,
   canSendOtp,
   loginOptions,
@@ -18,7 +17,7 @@ import { allow } from "@/lib/rate-limit";
 import type { ActionResult, PhoneOption, PhoneUserType } from "./types";
 
 // Messages are deliberately generic so they do not reveal whether a supplier,
-// kindergarten, phone or email exists.
+// kindergarten or phone exists.
 const MSG = {
   generic: "פרטים שגויים",
   tooMany: "בוצעו יותר מדי ניסיונות. יש לנסות שוב בעוד כמה דקות.",
@@ -33,8 +32,6 @@ const MSG = {
 const USER_TYPES: readonly PhoneUserType[] = ["SUPPLIER_CONTACT", "TEACHER"];
 const KEY_PATTERN = /^\d{1,10}$/;
 const CODE_PATTERN = /^\d{6}$/;
-// Allowlist, not just structure: letters, digits and the usual address symbols only.
-const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
 
 type PhoneInput = { userType: PhoneUserType; loginKey: string; optionId: number };
 
@@ -148,54 +145,4 @@ export async function verifyCode(input: PhoneInput & { code: string }): Promise<
     return { ok: false, message: MSG.failed };
   }
   redirect(home);
-}
-
-/** Staff: send a code to the email. The answer never says whether the address is registered. */
-export async function staffSendCode(email: string): Promise<ActionResult> {
-  const address = String(email ?? "").trim().toLowerCase();
-  if (address.length > 254 || !EMAIL_PATTERN.test(address)) {
-    return { ok: false, message: MSG.generic };
-  }
-  if (!(await allow("staffSend"))) return { ok: false, message: MSG.tooMany };
-
-  try {
-    const supabase = await createSessionClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email: address,
-      options: { shouldCreateUser: false },
-    });
-    if (error) logError("staff signInWithOtp", error);
-  } catch (err) {
-    logError("staffSendCode", err);
-  }
-  return { ok: true };
-}
-
-export async function staffVerifyCode(email: string, token: string): Promise<ActionResult> {
-  const address = String(email ?? "").trim().toLowerCase();
-  const code = String(token ?? "").replace(/\s/g, "");
-  if (!EMAIL_PATTERN.test(address) || !CODE_PATTERN.test(code)) {
-    return { ok: false, message: MSG.wrongCode };
-  }
-  if (!(await allow("staffVerify"))) return { ok: false, message: MSG.tooMany };
-
-  try {
-    const supabase = await createSessionClient();
-    const { data, error } = await supabase.auth.verifyOtp({
-      email: address,
-      token: code,
-      type: "email",
-    });
-    if (error || !data.user) return { ok: false, message: MSG.wrongCode };
-
-    const user = await appUser(data.user.id);
-    if (!user || user.user_type !== "STAFF") {
-      await supabase.auth.signOut();
-      return { ok: false, message: MSG.wrongCode };
-    }
-  } catch (err) {
-    logError("staffVerifyCode", err);
-    return { ok: false, message: MSG.failed };
-  }
-  redirect(HOME_BY_TYPE.STAFF);
 }

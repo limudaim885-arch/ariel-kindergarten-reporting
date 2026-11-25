@@ -20,8 +20,8 @@
 * Phone: מופעל. תוקף קוד 300 שניות, 6 ספרות.
   בסביבת בדיקות בלבד: Test Phone Numbers לטלפונים הפיקטיביים 050-0000xxx, עם קוד קבוע, בתוקף עד 28.2.2027.
   בייצור: לא מגדירים Test Phone Numbers.
-* Email (לצוות אריאל): תוקף קוד 600 שניות, 6 ספרות. כדי שהמייל יכיל קוד ולא קישור צריך להגדיר SMTP משלכם
-  ואז לערוך את התבנית "Magic link or OTP" כך שתכלול {{ .Token }}.
+* Azure (לצוות אריאל): מופעל, עם Client ID ו-Azure Tenant URL של הארגון של אריאל. את ה-Client Secret מזין אילן.
+  URL Configuration: להוסיף ל-Redirect URLs את <כתובת האתר>/auth/callback. פרטים ב"מדריך כניסה לצד השרת.md", סעיף 3.
 * Auth Hooks: Send SMS hook מפנה ל-access.send_sms_hook (זמני, מחזיר שגיאה). כשיגיע ה-API של 019
   מחליפים ל-HTTPS hook שמפנה ל-Edge Function ששולחת דרך 019 בשם השולח Ariel.
 

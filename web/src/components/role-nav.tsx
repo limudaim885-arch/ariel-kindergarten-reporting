@@ -2,15 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 export type NavLink = { href: string; label: string; count?: number; countLabel?: string };
 
 /** The main menu of a role area. The first link is the area's home and matches only exactly. */
 export function RoleNav({ label, links }: { label: string; links: readonly NavLink[] }) {
   const pathname = usePathname();
+  const listRef = useRef<HTMLUListElement>(null);
+
+  // On narrow screens the menu scrolls sideways: keep the current page's item in view.
+  useEffect(() => {
+    listRef.current
+      ?.querySelector('[aria-current="page"]')
+      ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [pathname]);
+
   return (
     <nav aria-label={label} className="order-last w-full sm:order-none sm:w-auto">
-      <ul className="flex gap-1">
+      <ul ref={listRef} className="flex gap-1 overflow-x-auto">
         {links.map((link, i) => {
           const active = i === 0 ? pathname === link.href : pathname.startsWith(link.href);
           return (

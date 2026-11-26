@@ -22,6 +22,8 @@ export const RULES = {
   // Staff final approval / return, and cap exceptions.
   staffDecision: { max: 120, windowMs: 10 * 60_000 },
   capOverride: { max: 30, windowMs: 10 * 60_000 },
+  // Staff Excel downloads (monthly report, reports list).
+  excelExport: { max: 30, windowMs: 10 * 60_000 },
   // /api/health: the uptime check calls it a few times every 15 minutes.
   health: { max: 30, windowMs: 60_000 },
 } satisfies Record<string, RateRule>;

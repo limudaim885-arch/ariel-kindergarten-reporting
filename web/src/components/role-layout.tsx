@@ -22,7 +22,7 @@ export function RoleLayout({
       >
         דילוג לתוכן
       </a>
-      <header className="border-b border-line bg-surface">
+      <header className="border-b border-line bg-surface print:hidden">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
           <div>
             <p className="font-semibold text-ink">דיווח הגנים</p>
@@ -39,7 +39,7 @@ export function RoleLayout({
           </form>
         </div>
       </header>
-      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
+      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 print:max-w-none print:p-0">
         {children}
       </main>
     </>

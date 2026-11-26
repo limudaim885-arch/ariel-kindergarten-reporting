@@ -13,13 +13,10 @@ import {
 } from "@/components/ui";
 import { formatDateTime, formatMoney, monthLabel, plural } from "@/lib/format";
 import { getStaffReports } from "@/lib/staff/data";
+import { applyFilters, filtersQuery, hasFilters, readFilters } from "@/lib/staff/report-filters";
 import { STAGES } from "@/lib/staff/types";
 
 export const metadata = { title: "כל הדיווחים - דיווח הגנים" };
-
-function one(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
-}
 
 const selectClass =
   "w-full rounded-[10px] border border-field-border bg-surface px-3 py-2 text-base text-ink";
@@ -27,15 +24,9 @@ const selectClass =
 export default async function StaffReportsPage({ searchParams }: PageProps<"/staff/reports">) {
   await connection();
   const { reports } = await getStaffReports();
-  const params = await searchParams;
-
   // Filters come from the URL (a plain GET form), so they work without JavaScript and can be bookmarked.
-  const stageParam = one(params.stage);
-  const stage = STAGES.find((s) => s.key === stageParam);
-  const monthParam = one(params.month);
-  const supplierParam = Number(one(params.supplier)) || 0;
-  const gardenParam = Number(one(params.garden)) || 0;
-  const mine = one(params.mine) === "1";
+  const filters = readFilters(await searchParams);
+  const { stage, month: monthParam, supplier: supplierParam, garden: gardenParam, mine } = filters;
 
   const months = [...new Set(reports.map((r) => `${r.year}-${String(r.month).padStart(2, "0")}`))].sort().reverse();
   const suppliers = [...new Map(reports.map((r) => [r.supplier.supplier_id, r.supplier])).values()].sort((a, b) =>
@@ -46,15 +37,8 @@ export default async function StaffReportsPage({ searchParams }: PageProps<"/sta
   );
   const anyMine = gardens.some((g) => g.is_mine);
 
-  const list = reports.filter(
-    (r) =>
-      (!stage || stage.statuses.includes(r.status)) &&
-      (!monthParam || `${r.year}-${String(r.month).padStart(2, "0")}` === monthParam) &&
-      (!supplierParam || r.supplier.supplier_id === supplierParam) &&
-      (!gardenParam || r.kindergarten.kindergarten_id === gardenParam) &&
-      (!mine || r.kindergarten.is_mine),
-  );
-  const filtered = Boolean(stage || monthParam || supplierParam || gardenParam || mine);
+  const list = applyFilters(reports, filters);
+  const filtered = hasFilters(filters);
   const total = list.reduce((sum, r) => sum + r.amount, 0);
 
   return (
@@ -147,9 +131,17 @@ export default async function StaffReportsPage({ searchParams }: PageProps<"/sta
         </div>
       </form>
 
-      <p className="mb-3 text-ink-muted" role="status">
-        {plural(list.length, "דיווח אחד", "דיווחים")} · {formatMoney(total)}
-      </p>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-ink-muted" role="status">
+          {plural(list.length, "דיווח אחד", "דיווחים")} · {formatMoney(total)}
+        </p>
+        {list.length ? (
+          // A plain link: the browser downloads the file. Not a <Link>, which would try to render it as a page.
+          <a href={`/staff/reports/export${filtersQuery(filters)}`} className={secondaryButtonClass} download>
+            הורדה לאקסל
+          </a>
+        ) : null}
+      </div>
 
       {list.length === 0 ? (
         <div className="rounded-[18px] border border-line bg-surface p-6 text-center text-ink-muted shadow-card">

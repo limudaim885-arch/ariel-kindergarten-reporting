@@ -102,6 +102,14 @@ export default async function StaffHome() {
             );
           })}
         </dl>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link href="/staff/monthly" className={secondaryButtonClass}>
+            לדוח החודשי לתשלום
+          </Link>
+          <Link href="/staff/metrics" className={secondaryButtonClass}>
+            למדדים
+          </Link>
+        </div>
       </Panel>
     </>
   );

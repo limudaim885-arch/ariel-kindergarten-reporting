@@ -14,6 +14,8 @@ export default async function StaffLayout({ children }: LayoutProps<"/staff">) {
     { href: "/staff/queue", label: "אישורים", count: queue, countLabel: "ממתינים" },
     { href: "/staff/reports", label: "דיווחים" },
     { href: "/staff/caps", label: "תקרות" },
+    { href: "/staff/monthly", label: "דוח חודשי" },
+    { href: "/staff/metrics", label: "מדדים" },
   ];
 
   return (

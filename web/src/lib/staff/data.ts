@@ -3,7 +3,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { getAuthUser, requireAppUser } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { StaffCapsData, StaffReportData, StaffReportsData } from "./types";
+import type { StaffCapsData, StaffMetricsData, StaffMonthlyData, StaffReportData, StaffReportsData } from "./types";
 
 /**
  * Staff data from the access.staff_* functions (migration 16). The database
@@ -42,4 +42,20 @@ export const getStaffCaps = cache(async (): Promise<StaffCapsData> => {
   const { data, error } = await createAdminClient().schema("access").rpc("staff_caps", { p_auth_user_id: id });
   if (error) throw new Error(`access.staff_caps: ${error.message}`);
   return data as StaffCapsData;
+});
+
+export const getStaffMonthly = cache(async (year: number, month: number): Promise<StaffMonthlyData> => {
+  const id = await staffAuthId();
+  const { data, error } = await createAdminClient()
+    .schema("access")
+    .rpc("staff_monthly", { p_auth_user_id: id, p_year: year, p_month: month });
+  if (error) throw new Error(`access.staff_monthly: ${error.message}`);
+  return data as StaffMonthlyData;
+});
+
+export const getStaffMetrics = cache(async (): Promise<StaffMetricsData> => {
+  const id = await staffAuthId();
+  const { data, error } = await createAdminClient().schema("access").rpc("staff_metrics", { p_auth_user_id: id });
+  if (error) throw new Error(`access.staff_metrics: ${error.message}`);
+  return data as StaffMetricsData;
 });

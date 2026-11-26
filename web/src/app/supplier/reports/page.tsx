@@ -1,6 +1,17 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { Callout, PageHead, StatusPill, buttonClass, secondaryButtonClass } from "@/components/ui";
+import {
+  Callout,
+  PageHead,
+  StatusPill,
+  buttonClass,
+  secondaryButtonClass,
+  stackedBody,
+  stackedCell as cell,
+  stackedHead,
+  stackedRow,
+  stackedTable,
+} from "@/components/ui";
 import { formatMoney, monthLabel, monthLabelOf, plural, ymKey } from "@/lib/format";
 import { getSupplierData } from "@/lib/supplier/data";
 import { FINAL, IN_PROGRESS, NEEDS_FIX, type Report } from "@/lib/supplier/types";
@@ -29,10 +40,6 @@ function hrefFor(filter: string, month: string | null) {
 const chip = "rounded-full border px-3 py-1 text-sm font-medium";
 const chipOn = `${chip} border-accent bg-accent-soft text-accent`;
 const chipOff = `${chip} border-line-strong text-ink hover:bg-surface-2`;
-
-// Below the sm breakpoint every row becomes a card, with the column name before each value.
-const cell =
-  "px-3 py-2 align-middle max-sm:flex max-sm:justify-between max-sm:gap-3 max-sm:px-0 max-sm:py-1 max-sm:before:font-medium max-sm:before:text-ink-muted max-sm:before:content-[attr(data-label)]";
 
 export default async function SupplierReportsPage({ searchParams }: PageProps<"/supplier/reports">) {
   await connection();
@@ -112,9 +119,9 @@ export default async function SupplierReportsPage({ searchParams }: PageProps<"/
         </div>
       ) : (
         <div className="rounded-[18px] border border-line bg-surface p-2 shadow-card sm:p-3">
-          <table className="w-full text-right max-sm:block">
+          <table className={stackedTable}>
             <caption className="sr-only">הדיווחים שלך, החדשים קודם</caption>
-            <thead className="max-sm:sr-only">
+            <thead className={stackedHead}>
               <tr className="border-b border-line text-sm text-ink-muted">
                 <th scope="col" className="px-3 py-2 font-medium">חודש</th>
                 <th scope="col" className="px-3 py-2 font-medium">גן</th>
@@ -127,11 +134,11 @@ export default async function SupplierReportsPage({ searchParams }: PageProps<"/
                 </th>
               </tr>
             </thead>
-            <tbody className="max-sm:block">
+            <tbody className={stackedBody}>
               {shown.map((r) => (
                 <tr
                   key={r.report_id}
-                  className="border-b border-line last:border-0 max-sm:mb-2 max-sm:block max-sm:rounded-xl max-sm:border max-sm:p-3 max-sm:last:border"
+                  className={stackedRow}
                 >
                   <td data-label="חודש" className={cell}>
                     {monthLabel(r.year, r.month)}

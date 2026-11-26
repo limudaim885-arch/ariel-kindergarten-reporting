@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ReportStatus } from "@/lib/supplier/types";
+import type { ReportStatus } from "@/lib/report-types";
 
 // Shared building blocks for the role screens. No inline styles anywhere:
 // the CSP blocks them (see lib/csp.ts).
@@ -86,6 +86,16 @@ export function StatCard({ title, value, sub, accent }: { title: string; value: 
     </div>
   );
 }
+
+// Table cells that turn into "label: value" rows of a card below the sm breakpoint.
+// The <td> needs data-label; the table, tbody and tr get the stacked* classes.
+export const stackedTable = "w-full text-right max-sm:block";
+export const stackedHead = "max-sm:sr-only";
+export const stackedBody = "max-sm:block";
+export const stackedRow =
+  "border-b border-line last:border-0 max-sm:mb-2 max-sm:block max-sm:rounded-xl max-sm:border max-sm:p-3 max-sm:last:border";
+export const stackedCell =
+  "px-3 py-2 align-middle max-sm:flex max-sm:justify-between max-sm:gap-3 max-sm:px-0 max-sm:py-1 max-sm:before:font-medium max-sm:before:text-ink-muted max-sm:before:content-[attr(data-label)]";
 
 /** A filled bar for used / cap. SVG attributes, not inline styles, so the CSP allows it. */
 export function CapBar({ label, used, cap, text }: { label: string; used: number; cap: number; text: string }) {

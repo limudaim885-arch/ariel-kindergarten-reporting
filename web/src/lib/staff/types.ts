@@ -155,3 +155,51 @@ export type CapOverrideInput = {
   extraAmount: number;
   reason: string;
 };
+
+export type MonthlyReport = {
+  report_id: number;
+  status: ReportStatus;
+  status_name: string;
+  /** Approved by staff or locked: counted for payment. */
+  is_final: boolean;
+  supplier: Supplier;
+  kindergarten: Kindergarten;
+  domain: string;
+  tariff: number;
+  days: number;
+  doubles: number;
+  sessions: number;
+  amount: number;
+  locked_at: string | null;
+  final_approved_by: string | null;
+};
+
+export type StaffMonthlyData = {
+  staff: StaffMember;
+  year: number;
+  month: number;
+  months: { year: number; month: number; reports: number }[];
+  reports: MonthlyReport[];
+};
+
+export type MetricsMonth = {
+  year: number;
+  month: number;
+  reports: number;
+  final: number;
+  avg_days_to_final: number | null;
+  max_days_to_final: number | null;
+  teacher_approved: number;
+  avg_days_to_teacher: number | null;
+  teacher_within_5_days: number;
+  approved: number;
+  digital: number;
+  bounced: number;
+};
+
+export type StaffMetricsData = {
+  staff: StaffMember;
+  today: string;
+  months: MetricsMonth[];
+  suppliers: { supplier_id: number; number: string; name: string; reports: number; bounced: number }[];
+};

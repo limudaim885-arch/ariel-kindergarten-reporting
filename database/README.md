@@ -1,82 +1,74 @@
 <div dir="rtl">
 
-# מסד הנתונים · שלב א'
+# מסד הנתונים
 
-📘 **מילון הנתונים המלא:** [PDF](../docs/data-dictionary-phase-a.pdf) · [Word](data-dictionary-phase-a.docx). כל הטבלאות, העמודות, הכללים העסקיים, התשתית לפרוסי והשאלות הפתוחות.
+PostgreSQL 17 ב-Supabase. הסקריפטים הממוספרים, סדר ההרצה ומדריך הכניסה נמצאים ב-[postgres/](postgres/):
+- [סדר הרצה.txt](postgres/סדר%20הרצה.txt): איזה סקריפט מריצים, באיזה סדר ובאיזו סביבה.
+- [מדריך כניסה לצד השרת.md](postgres/מדריך%20כניסה%20לצד%20השרת.md): תהליך הכניסה עם SMS ו-Microsoft.
+- כל שינוי במבנה המסד נשמר כסקריפט ממוספר חדש. לא משנים את המבנה ידנית בלוח הבקרה.
 
-**Microsoft SQL Server 2016 ומעלה**, מקומי, על שרת וירטואלי ברשת של אריאל. Collation מומלץ: `Hebrew_100_CI_AS`.
-
-## סדר הרצה
-| # | קובץ | מה עושה |
-|---|---|---|
-| 1 | — | יצירת מסד ריק עם Collation עברי |
-| 2 | [01_create_schema.sql](01_create_schema.sql) | 7 סכמות, 32 טבלאות, אילוצים, 4 תצוגות וטריגר לתור הייצוא לפרוסי |
-| 3 | [02_enable_history.sql](02_enable_history.sql) | היסטוריית שינויים אוטומטית (Temporal Tables) |
-| 4 | [03_reference_data.sql](03_reference_data.sql) | רשימות קבועות והגדרות מערכת |
-| 5א | [05_test_data.sql](05_test_data.sql) | **סביבת בדיקות:** נתוני דוגמה עם טלפונים פיקטיביים בלבד |
-| 5ב | `04_import_data.sql` | **סביבת ייצור:** נתוני האקסל של הלקוח. מופק על ידי `import_excel.py` |
-| 6 | [06_report_queries.sql](06_report_queries.sql) | **דוחות ומדדים (KPI):** תשלום חודשי לפי ספק, התקשרויות ליד התקרה, דיווחים שממתינים לחתימה, זמן טיפול ממוצע, אחוז החזרות ואחוז אישורים דיגיטליים. שאילתות קריאה בלבד |
-
-> `04_import_data.sql` וקובץ הדחויים מכילים נתונים אמיתיים של ספקים וגננות (כולל טלפונים), ולכן **לא נכללים בריפו הציבורי**. הם נמצאים אצל הצוות ויימסרו ללקוח בלבד.
+מילון הנתונים של שלב האפיון: [PDF](../docs/data-dictionary-phase-a.pdf) · [Word](../docs/data-dictionary-phase-a.docx). הוא נכתב לתכנון המקורי ב-SQL Server, ולכן שמות הטבלאות בו ב-PascalCase. המבנה עצמו כמעט זהה.
 
 ## חלוקה לסכמות
 | סכמה | תוכן |
 |---|---|
-| `ref` | רשימות קבועות: שנות לימודים, תחומי פעילות, סוגי התקשרות, סטטוסים, סיבות דחייה, חגים, הגדרות |
-| `core` | נתוני מאסטר: ספקים ואנשי קשר, גנים, גננות ושיבוצים, מפקחות, צוות אריאל, התקשרויות, פקודות עבודה, חריגות תקרה |
-| `ops` | דיווחים, שורות דיווח, היסטוריית סטטוסים, אישורי גננת, הודעות |
-| `auth` | קודי אימות חד-פעמיים (OTP) ונעילות טלפון |
+| `ref` | רשימות קבועות: שנות לימודים, תחומי פעילות, סוגי התקשרות, סוגי מפגש, סטטוסים, סיבות החזרה, חגים, תפקידי צוות והגדרות |
+| `core` | נתוני מאסטר: ספקים ואנשי קשר, גנים, גננות ושיבוצים, מפקחות ואישורי מפקחת, צוות אריאל, התקשרויות, פקודות עבודה וחריגות תקרה |
+| `ops` | דיווחים, שורות דיווח, היסטוריית סטטוסים, אישורי גננת והודעות |
+| `access` | כניסה והרשאות: נעילות נייד, ופונקציות השרת שהאפליקציה קוראת להן |
 | `audit` | יומן פעולות |
 | `procy` | תשתית לחיבור למערכת השכר פרוסי (שלב ב'): תור ייצוא ואצוות |
 | `stg` | ייבוא מהאקסל ושורות שנדחו |
+| `history` | היסטוריית שינויים אוטומטית לטבלאות המאסטר ולהגדרות |
 
-## עקרונות תכנון
-- כל טקסט ב-`NVARCHAR` (עברית), סכומים ב-`DECIMAL`, זמנים ב-`DATETIME2` ב-UTC.
-- אין מחיקה פיזית של ישויות עסקיות, רק `IsActive = 0`.
-- **התקשרות** = ספק × גן × שנת לימודים × תחום, עם תעריף, תקרת מפגשים ותקרה כספית.
-- כל שורת דיווח שומרת **צילום של התעריף** ברגע הדיווח, כך שעדכון חוזה לא משנה סכומים שכבר דווחו.
-- דיווח שננעל נכנס אוטומטית (טריגר) לתור הייצוא לפרוסי.
-- ייבוא שמרני: כפילות או ערך לא בטוח נדחה לתיקון, לא נכנס.
+## עקרונות
+- שמות טבלאות ועמודות ב-snake_case.
+- אין מחיקה פיזית של ישויות עסקיות, רק `is_active = false`.
+- **התקשרות** = ספק × גן × שנת לימודים × תחום, עם תעריף, תקרת מפגשים ותקרה כספית. הניצול מחושב בתצוגה `core.vw_engagement_usage` (`is_warning`, `is_blocked`).
+- כל שורת דיווח שומרת צילום של התעריף מרגע הדיווח (`tariff_applied`), כך שעדכון חוזה לא משנה סכומים שכבר דווחו.
+- דיווח שננעל נכנס אוטומטית (טריגר `trg_reports_enqueue_procy`) לתור הייצוא לפרוסי.
+- כל שינוי נרשם עם מי שביצע אותו (`app.actor`), וטבלאות `history` שומרות את הגרסאות הקודמות.
+- RLS פעיל בכל הטבלאות, ולתפקיד `anon` אין גישה. האפליקציה ניגשת רק דרך פונקציות ב-`access` עם מפתח השרת.
+
+## מחזור החיים של דיווח
+הסטטוסים נמצאים ב-`ref.report_statuses`:
+1. **טיוטה**
+2. **ממתין לחתימת גננת**: הספק שלח.
+3. **אושר ע"י הגננת**, או 4. **נדחה ע"י הגננת**: הגננת החזירה עם סיבה, והספק מתקן ושולח שוב.
+5. **דורש תיקון**: הרפרנטית החזירה לספק.
+6. **אושר סופית**: הרפרנטית אישרה.
+7. **אושר ונעול**: הדיווח נכנס אוטומטית לתור הייצוא לפרוסי.
 
 ## תרשים ישויות (ERD, הישויות העיקריות)
 ```mermaid
 erDiagram
-    Suppliers ||--o{ SupplierContacts : "אנשי קשר"
-    Suppliers ||--o{ Engagements : "התקשרויות"
-    Kindergartens ||--o{ Engagements : ""
-    SchoolYears ||--o{ Engagements : ""
-    ActivityDomains ||--o{ Engagements : ""
-    EngagementTypes ||--o{ Engagements : ""
-    Supervisors ||--o{ Kindergartens : "מפקחת"
-    StaffUsers ||--o{ Kindergartens : "רפרנטית"
-    Kindergartens ||--o{ TeacherAssignments : ""
-    Teachers ||--o{ TeacherAssignments : "שיבוץ גננת"
-    Engagements ||--o{ WorkOrders : "פקודות עבודה"
-    Engagements ||--o{ CapOverrides : "חריגות תקרה"
-    Engagements ||--o{ Reports : "דיווחים"
-    SupplierContacts ||--o{ Reports : "מגיש"
-    ReportStatuses ||--o{ Reports : "סטטוס"
-    Reports ||--o{ ReportLines : "מפגשים"
-    SessionTypes ||--o{ ReportLines : ""
-    Reports ||--o{ ReportStatusHistory : "היסטוריה"
-    Reports ||--o{ TeacherApprovals : "אישור גננת"
-    Teachers ||--o{ TeacherApprovals : ""
-    OtpRequests ||--o{ TeacherApprovals : "קוד אימות"
-    Reports ||--o{ Notifications : "הודעות"
-    Reports ||--o{ Outbox : "תור לפרוסי"
-    ExportBatches ||--o{ Outbox : ""
+    suppliers ||--o{ supplier_contacts : "אנשי קשר"
+    suppliers ||--o{ engagements : "התקשרויות"
+    kindergartens ||--o{ engagements : ""
+    supervisors ||--o{ kindergartens : "מפקחת"
+    staff_users ||--o{ kindergartens : "רפרנטית"
+    supervisors ||--o{ supervisor_approvals : ""
+    supervisor_approvals ||--o{ engagements : "אישור מפקחת"
+    kindergartens ||--o{ teacher_assignments : ""
+    teachers ||--o{ teacher_assignments : "שיבוץ גננת"
+    engagements ||--o{ work_orders : "פקודות עבודה"
+    engagements ||--o{ cap_overrides : "חריגות תקרה"
+    engagements ||--o{ reports : "דיווחים"
+    supplier_contacts ||--o{ reports : "מגיש"
+    reports ||--o{ report_lines : "מפגשים"
+    reports ||--o{ report_status_history : "היסטוריה"
+    reports ||--o{ teacher_approvals : "אישור גננת"
+    teachers ||--o{ teacher_approvals : ""
+    reports ||--o{ notifications : "הודעות"
+    reports ||--o{ outbox : "תור לפרוסי"
+    export_batches ||--o{ outbox : ""
 ```
 
-## ייבוא מחדש מהאקסל
+## ייבוא מהאקסל
 ```bash
 pip install pandas pyxlsb openpyxl
-python import_excel.py <טבלה_מרכזת.xlsb> <פרטי_מפעילים.xlsb> <תיקיית_פלט>
+python "postgres/סקריפט ייבוא מאקסל.py" <טבלה_מרכזת.xlsb> <פרטי_מפעילים.xlsb> <תיקיית_פלט>
 ```
-הסקריפט מפיק `04_import_data.sql` חדש וקובץ `דחויים_לתיקון.xlsx` עם סיבת הדחייה לכל שורה. בהרצה האחרונה: 195 שורות נדחו ו-105 אזהרות.
-
-## בדיקות שבוצעו
-- תחביר T-SQL של קבצים 01, 02, 03 ו-05 נבדק במלואו עם `sqlfluff` (דיאלקט tsql), בלי שגיאות.
-- נבדק שכל טבלה ועמודה שמוזכרות ב-INSERT קיימות בסכמה, ושכל מפתח זר מפנה לטבלה שכבר נוצרה.
-- הסקריפטים עדיין **לא הורצו על SQL Server בפועל**. ההרצה הראשונה צריכה להיות בסביבת הבדיקות של אריאל.
+הסקריפט מפיק `04_import_data.sql` וקובץ דחויים לתיקון. שניהם מכילים נתונים אמיתיים של ספקים וגננות, ולכן **לא נכנסים לריפו הציבורי** (הם ב-`.gitignore`).
 
 </div>

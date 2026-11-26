@@ -24,7 +24,7 @@ function logError(where: string, err: unknown) {
 }
 
 /**
- * Approve (sign) or return a report. The database checks that the report is in
+ * Approve or return a report. Approval needs only the "אני מאשרת" checkbox. The database checks that the report is in
  * one of this teacher's kindergartens and still waits for a signature, and
  * saves the evidence: phone, session, IP, user agent and a content hash.
  */
@@ -32,13 +32,14 @@ export async function decideReport(input: DecideInput): Promise<{ ok: false; mes
   const [user, authUser] = await Promise.all([getAppUser(), getAuthUser()]);
   if (!user || !authUser || user.user_type !== "TEACHER") return { ok: false, message: MSG.session };
 
-  const { reportId, decision, reasonId, comment, signedName } = (input ?? {}) as Partial<DecideInput>;
+  const { reportId, decision, reasonId, comment, confirmed } = (input ?? {}) as Partial<DecideInput>;
   if (
     typeof reportId !== "number" || !Number.isInteger(reportId) || reportId <= 0 ||
     (decision !== "APPROVED" && decision !== "REJECTED") ||
     (reasonId !== null && (typeof reasonId !== "number" || !Number.isInteger(reasonId) || reasonId <= 0 || reasonId > 32767)) ||
     typeof comment !== "string" || comment.length > 450 ||
-    typeof signedName !== "string" || signedName.length > 100
+    typeof confirmed !== "boolean" ||
+    (decision === "APPROVED" && !confirmed)
   ) {
     return { ok: false, message: MSG.invalid };
   }
@@ -64,7 +65,7 @@ export async function decideReport(input: DecideInput): Promise<{ ok: false; mes
         p_decision: decision,
         p_reason_id: decision === "REJECTED" ? reasonId : null,
         p_comment: decision === "REJECTED" ? comment : null,
-        p_signed_name: decision === "APPROVED" ? signedName : null,
+        p_signed_name: null,
         p_session_id: sessionId,
         p_ip: ip === "unknown" ? null : ip,
         p_user_agent: userAgent,

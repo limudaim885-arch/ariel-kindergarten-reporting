@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export type NavLink = { href: string; label: string };
+export type NavLink = { href: string; label: string; count?: number; countLabel?: string };
 
 /** The main menu of a role area. The first link is the area's home and matches only exactly. */
 export function RoleNav({ label, links }: { label: string; links: readonly NavLink[] }) {
@@ -18,11 +18,17 @@ export function RoleNav({ label, links }: { label: string; links: readonly NavLi
               <Link
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`block rounded-[10px] px-3 py-2 text-center text-sm font-medium ${
+                className={`block whitespace-nowrap rounded-[10px] px-3 py-2 text-center text-sm font-medium ${
                   active ? "bg-accent-soft text-accent" : "text-ink hover:bg-surface-2"
                 }`}
               >
                 {link.label}
+                {link.count ? (
+                  <span className="ms-1.5 inline-block min-w-5 rounded-full bg-accent px-1.5 text-xs font-semibold text-on-fill">
+                    {link.count}
+                    {link.countLabel ? <span className="sr-only"> {link.countLabel}</span> : null}
+                  </span>
+                ) : null}
               </Link>
             </li>
           );

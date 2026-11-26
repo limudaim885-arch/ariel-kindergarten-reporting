@@ -15,6 +15,8 @@ export const RULES = {
   verifyCode: { max: 15, windowMs: 10 * 60_000 },
   // Staff sign-in with the Ariel work account: /auth/microsoft and /auth/callback.
   staffSso: { max: 20, windowMs: 10 * 60_000 },
+  // Supplier sends a report to the teachers.
+  submitReport: { max: 20, windowMs: 10 * 60_000 },
   // /api/health: the uptime check calls it a few times every 15 minutes.
   health: { max: 30, windowMs: 60_000 },
 } satisfies Record<string, RateRule>;

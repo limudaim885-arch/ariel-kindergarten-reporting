@@ -18,6 +18,8 @@
   --success-soft: #e5f4eb;
   --critical: #c2362b;
   --critical-soft: #fceae8;
+  --warning: #8a5a00;
+  --warning-soft: #fbf3dc;
   --info: #4a5da3;
   --info-soft: #edf0fa;
   --focus-ring: #253a8c;
@@ -43,6 +45,8 @@
     --success-soft: #14301f;
     --critical: #ff7a6e;
     --critical-soft: #3d1c19;
+    --warning: #f2c14e;
+    --warning-soft: #3a2f12;
     --info: #9aa9e6;
     --info-soft: #1d2440;
     --focus-ring: #aebdf8;
@@ -67,6 +71,8 @@
   --color-success-soft: var(--success-soft);
   --color-critical: var(--critical);
   --color-critical-soft: var(--critical-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
   --font-sans: var(--font-heebo);

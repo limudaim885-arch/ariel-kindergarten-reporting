@@ -133,7 +133,7 @@ export const STAGES = [
   {
     key: "final",
     label: "אושרו ונעלו",
-    holder: "סגור, ועבר לתור של פרוסי",
+    holder: "סגור, מוכן לתשלום",
     statuses: ["STAFF_APPROVED", "LOCKED"] as ReportStatus[],
   },
 ] as const;

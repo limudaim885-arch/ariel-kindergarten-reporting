@@ -3,20 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const LINKS = [
-  { href: "/supplier", label: "בית" },
-  { href: "/supplier/new", label: "דיווח חדש" },
-  { href: "/supplier/reports", label: "הדיווחים שלי" },
-] as const;
+export type NavLink = { href: string; label: string };
 
-export function SupplierNav() {
+/** The main menu of a role area. The first link is the area's home and matches only exactly. */
+export function RoleNav({ label, links }: { label: string; links: readonly NavLink[] }) {
   const pathname = usePathname();
   return (
-    <nav aria-label="תפריט ספק" className="order-last w-full sm:order-none sm:w-auto">
+    <nav aria-label={label} className="order-last w-full sm:order-none sm:w-auto">
       <ul className="flex gap-1">
-        {LINKS.map((link) => {
-          const active =
-            link.href === "/supplier" ? pathname === "/supplier" : pathname.startsWith(link.href);
+        {links.map((link, i) => {
+          const active = i === 0 ? pathname === link.href : pathname.startsWith(link.href);
           return (
             <li key={link.href} className="flex-1 sm:flex-none">
               <Link

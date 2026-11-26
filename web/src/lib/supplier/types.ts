@@ -1,14 +1,10 @@
 // Shape of access.supplier_data (migration 13). Numbers from Postgres numeric
 // arrive as JSON numbers.
 
-export type ReportStatus =
-  | "DRAFT"
-  | "SENT_TO_TEACHER"
-  | "TEACHER_APPROVED"
-  | "TEACHER_REJECTED"
-  | "RETURNED"
-  | "STAFF_APPROVED"
-  | "LOCKED";
+import type { ReportLine, ReportStatus } from "@/lib/report-types";
+
+export type { ReportLine, ReportStatus };
+export { FINAL, IN_PROGRESS, NEEDS_FIX } from "@/lib/report-types";
 
 export type BlockReason = "MANUAL_TRACK" | "NEEDS_SUPERVISOR_APPROVAL";
 
@@ -28,8 +24,6 @@ export type Engagement = {
   is_blocked: boolean;
   block_reason: BlockReason | null;
 };
-
-export type ReportLine = { date: string; double: boolean; amount: number; flagged: boolean };
 
 export type Report = {
   report_id: number;
@@ -66,10 +60,6 @@ export type SubmitItem = { engagementId: number; lines: { date: string; double: 
 export type SubmitResult =
   | { ok: false; message: string }
   | { ok: false; errors: { engagementId: number; message: string }[] };
-
-export const IN_PROGRESS: ReportStatus[] = ["SENT_TO_TEACHER", "TEACHER_APPROVED"];
-export const NEEDS_FIX: ReportStatus[] = ["RETURNED", "TEACHER_REJECTED"];
-export const FINAL: ReportStatus[] = ["STAFF_APPROVED", "LOCKED"];
 
 export const BLOCK_REASON_TEXT: Record<BlockReason, string> = {
   MANUAL_TRACK: "הגן הזה במסלול טופס ידני. את הדיווח מגישים בטופס הנייר החתום.",

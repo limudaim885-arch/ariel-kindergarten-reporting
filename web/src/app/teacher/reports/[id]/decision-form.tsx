@@ -18,14 +18,13 @@ export function DecisionForm({
 }) {
   const [mode, setMode] = useState<"approve" | "return">("approve");
   const [confirmed, setConfirmed] = useState(false);
-  const [signedName, setSignedName] = useState("");
   const [reasonId, setReasonId] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const otherSelected = reasons.find((r) => r.id === reasonId)?.name === "אחר";
-  const canApprove = confirmed && signedName.trim().length > 0;
+  const canApprove = confirmed;
   const canReturn = reasonId !== null && (!otherSelected || comment.trim().length > 0);
 
   function send(decision: "APPROVED" | "REJECTED") {
@@ -37,7 +36,7 @@ export function DecisionForm({
         decision,
         reasonId: decision === "REJECTED" ? reasonId : null,
         comment: decision === "REJECTED" ? comment.trim() : "",
-        signedName: decision === "APPROVED" ? signedName.trim() : "",
+        confirmed: decision === "APPROVED" && confirmed,
       });
       if (result && !result.ok) setMessage(result.message);
     });
@@ -46,7 +45,7 @@ export function DecisionForm({
   return (
     <section aria-labelledby="decision-title" className="rounded-[18px] border border-line bg-surface p-5 shadow-card">
       <h2 id="decision-title" className="mb-3 text-lg font-semibold text-ink">
-        {mode === "approve" ? "אישור וחתימה" : "החזרה לספק לתיקון"}
+        {mode === "approve" ? "אישור הדיווח" : "החזרה לספק לתיקון"}
       </h2>
 
       {message ? (
@@ -62,7 +61,7 @@ export function DecisionForm({
             if (canApprove) send("APPROVED");
           }}
         >
-          <label className="mb-4 flex cursor-pointer items-start gap-2 text-ink">
+          <label className="flex cursor-pointer items-start gap-2 text-ink">
             <input
               type="checkbox"
               checked={confirmed}
@@ -72,26 +71,14 @@ export function DecisionForm({
             <span>אני מאשרת שהפרטים שלמעלה נכונים ומשקפים את הפעילות שהתקיימה בפועל בגן.</span>
           </label>
 
-          <label htmlFor="signed-name" className="mb-1 block font-medium text-ink">
-            חתימה דיגיטלית: יש להקליד את שמך המלא
-          </label>
-          <input
-            id="signed-name"
-            type="text"
-            autoComplete="name"
-            maxLength={100}
-            value={signedName}
-            onChange={(e) => setSignedName(e.target.value)}
-            className={fieldClass}
-          />
-          <p className="mt-1 text-sm text-ink-muted">
+          <p className="mt-2 text-sm text-ink-muted">
             מחוברת כ{teacherName}. האישור יישמר עם הנייד שלך ועם טביעת התוכן של הדיווח, כדי שאפשר יהיה לוודא
-            שהוא לא שונה אחרי החתימה.
+            שהוא לא שונה אחרי האישור.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-3">
             <button type="submit" disabled={pending || !canApprove} className={buttonClass}>
-              {pending ? "שומר…" : "אישור וחתימה"}
+              {pending ? "שומר…" : "אישור הדיווח"}
             </button>
             <button
               type="button"

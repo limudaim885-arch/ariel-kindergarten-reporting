@@ -46,5 +46,6 @@ export type DecideInput = {
   decision: "APPROVED" | "REJECTED";
   reasonId: number | null;
   comment: string;
-  signedName: string;
+  /** The "אני מאשרת" checkbox; must be true to approve. */
+  confirmed: boolean;
 };

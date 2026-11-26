@@ -2,6 +2,6 @@
 Thumbs.db
 
 # Real client data: never commit
-database/04_import_data.sql
+04_import_data.sql
 *.xlsb
 *דחויים*

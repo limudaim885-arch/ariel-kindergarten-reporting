@@ -71,7 +71,7 @@ export function StaffDecisionForm({
             <span>בדקתי את הדיווח מול ההתקשרות, ואני מאשרת אותו סופית לתשלום.</span>
           </label>
           <p className="mt-2 text-sm text-ink-muted">
-            אחרי הנעילה אי אפשר לשנות את הדיווח, והוא עובר לתור הייצוא של פרוסי.
+            אחרי הנעילה אי אפשר לשנות את הדיווח, והוא מסומן כמוכן לתשלום.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-3">

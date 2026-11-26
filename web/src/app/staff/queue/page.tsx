@@ -16,7 +16,7 @@ import { getStaffReports } from "@/lib/staff/data";
 export const metadata = { title: "תור אישורים - דיווח הגנים" };
 
 const DONE: Record<string, string> = {
-  locked: "הדיווח אושר סופית וננעל, ועבר לתור של פרוסי.",
+  locked: "הדיווח אושר סופית וננעל. הוא מוכן להעברה לתשלום.",
   returned: "הדיווח הוחזר לספק לתיקון, יחד עם הסיבה וההערה.",
 };
 
